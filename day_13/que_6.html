@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Selector</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        img {
+            width: 300px;
+            height: auto;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Select an Animal</h1>
+    <select id="animal-select">
+        <option value="dog">Dog</option>
+        <option value="cat">Cat</option>
+        <option value="elephant">Elephant</option>
+        <option value="lion">Lion</option>
+    </select>
+    <img id="animalImage" src="dog-67.jpg" alt="Selected Animal">
+    <script>
+        const animalSelect = document.getElementById("animalSelect");
+        const animalImage = document.getElementById("animalImage");
+
+        const animalImages = {
+            dog: "dog-67.jpg",
+            cat: "cat.jpg",
+            elephant: "elephant.jpg",
+            lion: "lion.jpg"
+        };
+        animalSelect.addEventListener("change", function () {
+            const selectedAnimal = animalSelect.value;
+            animalImage.src = animalImage[selctedAnimal];
+            animalImage.alt = selectedAnimal.chatAt(0).toUpperCase() + selectedAnimal.slice(1);
+        });
+    </script>
+</body>
+
+</html>

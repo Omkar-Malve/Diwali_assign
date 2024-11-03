@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        input,
+        button {
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Text Analyzer Tool</h1>
+    <textarea id="textInput" rows="10" cols="50" placeholder="Enter your text here..."></textarea><br>
+    <button id="countWords">Count Words</button>
+    <button id="toUpperCase">To Upper Case</button>
+    <button id="toLowerCase">To Lower Case</button>
+    <button id="checkSubstring">Check Substring</button>
+    <input type="text" id="substringInput" placeholder="Substring to check...">
+    <h2>Results:</h2>
+    <div id="results"></div>
+</body>
+
+</html>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const textInput = document.getElementById("textInput");
+        const resultsDiv = document.getElementById("results");
+
+        // Higher-order function to handle event listeners
+        const addEventListenerToButton = (buttonId, callback) => {
+            const button = document.getElementById(buttonId);
+            button.addEventListener("click", callback);
+        };
+
+        // Function to count words
+        const countWords = () => {
+            const text = textInput.value.trim();
+            const wordCount = text ? text.split(/\s+/).length : 0;
+            resultsDiv.innerHTML = `Word Count: ${wordCount}`;
+        };
+
+        // Function to transform text to upper case
+        const toUpperCase = () => {
+            resultsDiv.innerHTML = `Upper Case: ${textInput.value.toUpperCase()}`;
+        };
+
+        // Function to transform text to lower case
+        const toLowerCase = () => {
+            resultsDiv.innerHTML = `Lower Case: ${textInput.value.toLowerCase()}`;
+        };
+
+        // Function to check for a substring
+        const checkSubstring = () => {
+            const substring = document.getElementById("substringInput").value;
+            const text = textInput.value;
+            const containsSubstring = text.includes(substring);
+            resultsDiv.innerHTML = `Contains "${substring}": ${containsSubstring}`;
+        };
+
+        // Attach event listeners
+        addEventListenerToButton("countWords", countWords);
+        addEventListenerToButton("toUpperCase", toUpperCase);
+        addEventListenerToButton("toLowerCase", toLowerCase);
+        addEventListenerToButton("checkSubstring", checkSubstring);
+    });
+</script>
