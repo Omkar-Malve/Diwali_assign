@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminder Manager</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Reminder Manager</h1>
+
+        <!-- Reminder form -->
+        <div class="reminder-form">
+            <input type="text" id="reminderText" placeholder="Enter reminder..." required>
+            <input type="datetime-local" id="reminderTime" required>
+            <button onclick="addReminder()">Add Reminder</button>
+        </div>
+
+        <!-- Active reminders list -->
+        <div id="reminderList">
+            <h2>Active Reminders</h2>
+            <ul id="reminderItems"></ul>
+        </div>
+    </div>
+
+    <script>
+        let reminders = []; // Array to store reminders
+
+        // Add a new reminder
+        function addReminder() {
+            const text = document.getElementById('reminderText').value;
+            const time = new Date(document.getElementById('reminderTime').value);
+            const now = new Date();
+
+            if (!text || isNaN(time.getTime()) || time <= now) {
+                alert('Please enter a valid reminder text and future date.');
+                return;
+            }
+
+            const id = Date.now(); // Unique ID for each reminder
+            const delay = time - now; // Calculate delay in milliseconds
+
+            const reminder = {
+                id,
+                text,
+                time,
+                timeoutId: setTimeout(() => triggerReminder(id), delay),
+            };
+
+            reminders.push(reminder);
+            document.getElementById('reminderText').value = '';
+            document.getElementById('reminderTime').value = '';
+
+            displayReminders();
+        }
+
+        // Display active reminders
+        function displayReminders() {
+            const reminderList = document.getElementById('reminderItems');
+            reminderList.innerHTML = '';
+
+            reminders.forEach(reminder => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+            <span>${reminder.text} - ${reminder.time.toLocaleString()}</span>
+            <div>
+                <button class="edit" onclick="editReminder(${reminder.id})">Edit</button>
+                <button class="delete" onclick="deleteReminder(${reminder.id})">Delete</button>
+            </div>
+        `;
+                reminderList.appendChild(listItem);
+            });
+        }
+
+        // Trigger reminder alert
+        function triggerReminder(id) {
+            const reminder = reminders.find(rem => rem.id === id);
+            if (reminder) {
+                alert(`Reminder: ${reminder.text}`);
+                deleteReminder(id); // Remove reminder after alert
+            }
+        }
+
+        // Edit a reminder
+        function editReminder(id) {
+            const reminder = reminders.find(rem => rem.id === id);
+            if (reminder) {
+                const newText = prompt('Edit reminder text:', reminder.text);
+                const newTime = prompt('Edit reminder time (YYYY-MM-DDTHH:MM):', reminder.time.toISOString().slice(0, 16));
+
+                const updatedTime = new Date(newTime);
+                const now = new Date();
+
+                if (newText && !isNaN(updatedTime.getTime()) && updatedTime > now) {
+                    clearTimeout(reminder.timeoutId); // Clear existing timeout
+
+                    reminder.text = newText;
+                    reminder.time = updatedTime;
+                    reminder.timeoutId = setTimeout(() => triggerReminder(id), updatedTime - now);
+
+                    displayReminders();
+                } else {
+                    alert('Please enter a valid reminder text and future date.');
+                }
+            }
+        }
+
+        // Delete a reminder
+        function deleteReminder(id) {
+            const reminderIndex = reminders.findIndex(rem => rem.id === id);
+            if (reminderIndex !== -1) {
+                clearTimeout(reminders[reminderIndex].timeoutId);
+                reminders.splice(reminderIndex, 1);
+                displayReminders();
+            }
+        }
+
+        // Periodic update to display reminders
+        setInterval(displayReminders, 1000);
+    </script>
+</body>
+
+</html>

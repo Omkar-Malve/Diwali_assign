@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Slideshow</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+        }
+
+        .slideshow-container {
+            width: 600px;
+            height: 400px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 5px solid #444;
+            background-color: #000;
+        }
+
+        #slideshow {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease-in-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slideshow-container">
+        <img id="slideshow" src="" alt="Movie Image">
+    </div>
+    <script>
+        // Array of movie image URLs
+        const movieImages = [
+            'https://via.placeholder.com/600x400?text=Movie+1',
+            'https://via.placeholder.com/600x400?text=Movie+2',
+            'https://via.placeholder.com/600x400?text=Movie+3',
+            'https://via.placeholder.com/600x400?text=Movie+4',
+            'https://via.placeholder.com/600x400?text=Movie+5'
+        ];
+
+        // Set initial image index
+        let currentIndex = 0;
+
+        // Get the image element from the DOM
+        const slideshowElement = document.getElementById("slideshow");
+
+        // Function to change the image
+        function updateSlideshow() {
+            // Update the src attribute to the current image
+            slideshowElement.src = movieImages[currentIndex];
+
+            // Increment index and loop back to 0 if at the end of the array
+            currentIndex = (currentIndex + 1) % movieImages.length;
+        }
+
+        // Initialize the slideshow with the first image
+        slideshowElement.src = movieImages[currentIndex];
+
+        // Set interval to change the image every 2000ms (2 seconds)
+        setInterval(updateSlideshow, 2000);
+    </script>
+</body>
+
+</html>
