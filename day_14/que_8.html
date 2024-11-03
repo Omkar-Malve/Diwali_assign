@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .task {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .completed {
+            background-color: #e0ffe0;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task Management Application</h1>
+
+    <form id="taskForm">
+        <input type="text" id="title" placeholder="Task Title" required><br>
+        <textarea id="description" placeholder="Task Description" required></textarea><br>
+        <select id="status">
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+        </select><br>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <h2>Filter Tasks</h2>
+    <button id="filterAll">All</button>
+    <button id="filterPending">Pending</button>
+    <button id="filterInProgress">In Progress</button>
+    <button id="filterCompleted">Completed</button>
+
+    <h2>Tasks</h2>
+    <div id="taskList"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const taskForm = document.getElementById("taskForm");
+    const taskList = document.getElementById("taskList");
+
+    let tasks = [];
+
+    // Higher-order function for handling button events
+    const addEventListenerToButton = (buttonId, callback) => {
+        const button = document.getElementById(buttonId);
+        button.addEventListener("click", callback);
+    };
+
+    // Function to render tasks based on the provided filter
+    const renderTasks = (filter = "All") => {
+        taskList.innerHTML = "";
+        tasks
+            .filter(task => filter === "All" || task.status === filter)
+            .forEach((task, index) => {
+                const taskDiv = document.createElement("div");
+                taskDiv.classList.add("task");
+                if (task.status === "Completed") taskDiv.classList.add("completed");
+
+                taskDiv.innerHTML = `
+                    <h3>${task.title}</h3>
+                    <p>${task.description}</p>
+                    <p>Status: ${task.status}</p>
+                    <button onclick="markComplete(${index})">Mark as Complete</button>
+                    <button onclick="editTask(${index})">Edit</button>
+                    <button onclick="deleteTask(${index})">Delete</button>
+                `;
+                taskList.appendChild(taskDiv);
+            });
+    };
+
+    // Function to add a task
+    const addTask = (title, description, status) => {
+        tasks.push({ title, description, status });
+        renderTasks();
+    };
+
+    // Function to mark a task as complete
+    window.markComplete = (index) => {
+        tasks[index].status = "Completed";
+        renderTasks();
+    };
+
+    // Function to delete a task
+    window.deleteTask = (index) => {
+        tasks.splice(index, 1);
+        renderTasks();
+    };
+
+    // Function to edit a task
+    window.editTask = (index) => {
+        const task = tasks[index];
+        document.getElementById("title").value = task.title;
+        document.getElementById("description").value = task.description;
+        document.getElementById("status").value = task.status;
+
+        taskForm.onsubmit = (e) => {
+            e.preventDefault();
+            task.title = document.getElementById("title").value;
+            task.description = document.getElementById("description").value;
+            task.status = document.getElementById("status").value;
+
+            taskForm.reset();
+            taskForm.onsubmit = handleFormSubmit;
+            renderTasks();
+        };
+    };
+
+    // Function to handle form submission
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+        const status = document.getElementById("status").value;
+
+        if (title && description) {
+            addTask(title, description, status);
+            taskForm.reset();
+        } else {
+            alert("Please fill out both the title and description.");
+        }
+    };
+
+    // Filter functions
+    addEventListenerToButton("filterAll", () => renderTasks("All"));
+    addEventListenerToButton("filterPending", () => renderTasks("Pending"));
+    addEventListenerToButton("filterInProgress", () => renderTasks("In Progress"));
+    addEventListenerToButton("filterCompleted", () => renderTasks("Completed"));
+
+    // Attach form submission handler
+    taskForm.onsubmit = handleFormSubmit;
+});
+    </script>
+</body>
+</html>
